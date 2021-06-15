@@ -42,8 +42,8 @@ for i in range(len(n)-1):
     solucion = spint.solve_ivp(lambda x,y: ODE(x,y,n[i]), [-10, 0], [0,1], t_eval=x_lista_izq, method=metodo)
     solucion2 = spint.solve_ivp(lambda x,y: ODE(x,y,n[i]), [10, 0], [0,1], t_eval=x_lista_der, method=metodo)
     norma = np.linalg.norm(solucion.y[0]**2)
-    solucionnormalizadaIzq = ((solucion.y[0]**2)/norma)+i
-    solucionnormalizadaDer = ((solucion2.y[0]**2)/norma)+i
+    solucionnormalizadaIzq = ((solucion.y[0]**2)/norma)+i+1
+    solucionnormalizadaDer = ((solucion2.y[0]**2)/norma)+i+1
     plt.plot(x_lista_izq, solucionnormalizadaIzq, color)
     plt.plot(x_lista_der, solucionnormalizadaDer, color, label = ('Energía: ', NivelEnergia(n[i])))
 
