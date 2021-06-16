@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.integrate as spint
 import matplotlib.pyplot as plt
+from matplotlib.ticker import (MultipleLocator, AutoMinorLocator)
 
 h_daga = 1 #constante de Planck reducida
 m = 1 #masa de la partícula
@@ -37,18 +38,18 @@ x_lista_der = np.linspace(10, 0, 1000) #Valores positivos de x a evaluar
 #El siguiente ciclo resuelve la ecuación de Schrodinger para todos los niveles de energía deseados. Primero encuentra la solución para
 # x negativos y positivos por separado. Luego ambos resultados son elevados al cuadrado y normalizados para obtener la distribución de
 #probabilidad. Ambos resultados son luego juntados en un solo gráfico.
-for i in range(len(n)-1):
+for i in range(len(n)):
     color = colores[i]
     solucion = spint.solve_ivp(lambda x,y: ODE(x,y,n[i]), [-10, 0], [0,1], t_eval=x_lista_izq, method=metodo)
     solucion2 = spint.solve_ivp(lambda x,y: ODE(x,y,n[i]), [10, 0], [0,1], t_eval=x_lista_der, method=metodo)
     norma = np.linalg.norm(solucion.y[0]**2)
-    solucionnormalizadaIzq = ((solucion.y[0]**2)/norma)+i+1
-    solucionnormalizadaDer = ((solucion2.y[0]**2)/norma)+i+1
+    solucionnormalizadaIzq = ((solucion.y[0]**2)/norma)+i+0.5 #Se suma para lograr el n+1/2
+    solucionnormalizadaDer = ((solucion2.y[0]**2)/norma)+i+0.5 #Se suma para lograr el n+1/2
     plt.plot(x_lista_izq, solucionnormalizadaIzq, color)
-    plt.plot(x_lista_der, solucionnormalizadaDer, color, label = ('Energía: ', NivelEnergia(n[i])))
+    plt.plot(x_lista_der, solucionnormalizadaDer, color, label = ((n[i])))
 
 #Este bloque de código está hecho para obtener las herramientas necesarias para graficar la barrera de potencial.
-xtotal = np.linspace(-4,4,2000)
+xtotal = np.linspace(-5,5,2000)
 puntosPotencial = []
 for j in range (len(xtotal)):
     Potencial_X = Potencial(xtotal[j])
@@ -57,9 +58,10 @@ for j in range (len(xtotal)):
 #Se grafica el potencial sobre las soluciones para los distintos niveles de energía.
 plt.plot(xtotal,puntosPotencial, label = ('Potencial'))
 plt.xlabel("x")
-plt.ylabel("Nivel de Energía")
-plt.grid(True)
+plt.ylabel("Energía ($\hbar\omega$)")
+plt.grid(True,'both')
 plt.title("Distribución de probabilidad normalizada")
-plt.legend(loc='upper right')
+plt.legend(title="Nivel de energía",loc='lower right',fontsize=8)
+plt.xlim(-10,10)
+plt.ylim(0, 8)
 plt.show()
-
